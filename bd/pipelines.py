@@ -4,6 +4,7 @@
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+import re
 import os
 import shutil
 import scrapy
@@ -16,12 +17,17 @@ class ImagePipeline(ImagesPipeline):
     headers = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, sdch',
-        'Host': 'h.hiphotos.baidu.com',
+        'Host': '',
+        'Referer': '',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36',
     }
 
     def get_media_requests(self, item, info):
-        return scrapy.Request(item['url'], headers=self.headers)
+        _headers =  self.headers
+        _headers['Host'] = re.search(r'http://(.*?)/', item['url']).groups()[0]
+        _headers['Referer'] = item['origin_url']
+        print _headers
+        return scrapy.Request(item['url'], headers=_headers)
 
     def item_completed(self, results, item, info):
         image_paths = [x['path'] for ok, x in results if ok]
