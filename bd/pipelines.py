@@ -26,7 +26,6 @@ class ImagePipeline(ImagesPipeline):
         _headers =  self.headers
         _headers['Host'] = re.search(r'http://(.*?)/', item['url']).groups()[0]
         _headers['Referer'] = item['origin_url']
-        print _headers
         return scrapy.Request(item['url'], headers=_headers)
 
     def item_completed(self, results, item, info):
