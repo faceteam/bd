@@ -20,7 +20,10 @@ ITEM_PIPELINES = {
     'bd.pipelines.ImagePipeline': 300,
 }
 
-IMAGES_STORE = 'E:/baidu'
+RETRY_ENABLED = False # no retry, maybe faster
 
-PeopleNames = 'E:/GIT/bd/a.txt'
-Pages = 5
+IMAGES_STORE = '/where/you/want/to/store'
+
+PeopleNames = '/where/your/people.txt'
+
+Pages = 5 # numbers will be Pages * 60 (may not so much)
