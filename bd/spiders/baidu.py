@@ -25,16 +25,20 @@ class BaiduSpider(scrapy.Spider):
 
     def start_requests(self):
         base = 60
-        for name in PeopleNames:
-            for page in range(0, Pages):
-                url = self.url_pattern.format(page*base, base, name)
-                yield Request(url, headers=self.headers)
+        with open(PeopleNames, 'r') as fd:
+            files = fd.read()
+            files = files.split("\n")
+            for name in files:
+                for page in range(0, Pages):
+                    url = self.url_pattern.format(page*base, base, name)
+                    yield Request(url, headers=self.headers)
 
     def parse(self, response):
         body = response.body
-        data = re.findall(r'\"objURL\":\"(http://.*?\.jpg)\"', body)
+        data = re.findall(r'\"objURL\":\"(http://.*?)\"', body)
         name = re.search(r'word=(.*?)&', response.url).groups()[0]
         name = urllib.unquote(name).decode('utf8') # unicode
+        #name = urllib.unquote(name)
         for one in data:
             url = one
             media_guid = hashlib.sha1(url).hexdigest()  # change to request.url after deprecation

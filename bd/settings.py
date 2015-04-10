@@ -22,13 +22,5 @@ ITEM_PIPELINES = {
 
 IMAGES_STORE = 'E:/baidu'
 
-PeopleNames = [
-    '佟丽娅',
-    '范冰冰',
-    '李钟硕',
-    '胡歌',
-    '杨幂',
-    '唐嫣',
-]
-
+PeopleNames = 'E:/GIT/bd/a.txt'
 Pages = 5
