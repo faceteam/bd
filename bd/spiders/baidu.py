@@ -29,6 +29,7 @@ class BaiduSpider(scrapy.Spider):
             files = fd.read()
             files = files.split("\n")
             for name in files:
+                name = name.strip()
                 for page in range(0, Pages):
                     url = self.url_pattern.format(page*base, base, name)
                     yield Request(url, headers=self.headers)
