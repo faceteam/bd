@@ -10,19 +10,18 @@ from bd.items import ImageItem
 from bd.settings import PeopleNames, IMAGES_STORE
 from bd.settings import Pages
 
-class BaiduSpider(scrapy.Spider):
+class Spider(scrapy.Spider):
     """
-        baidu pictures for face project
+        360 pictures for face project
     """
-    name = 'Baidu'
+    name = 'Haosou'
 
     headers = {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, sdch',
-        'Host': 'image.baidu.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36',
     }
-    url_pattern = "http://image.baidu.com/i?tn=resultjsonavatarnew&ie=utf-8&word={2}&cg=star&pn={0}&rn={1}&itg=0&z=0&fr=&width=&height=&lm=-1&ic=0&s=0&st=-1"
+    url_pattern = "http://image.haosou.com/j?q={2}&src=srp&sn={1}&pn={0}"
 
     def start_requests(self):
         base = 60
@@ -37,12 +36,12 @@ class BaiduSpider(scrapy.Spider):
 
     def parse(self, response):
         body = response.body
-        data = re.findall(r'\"objURL\":\"(http://.*?)\"', body)
-        name = re.search(r'word=(.*?)&', response.url).groups()[0]
+        data = re.findall(r'\"img\":\"(http:.*?)\"', body)
+        name = re.search(r'\?q=(.*?)&', response.url).groups()[0]
         name = urllib.unquote(name).decode('utf8') # unicode
         #name = urllib.unquote(name)
         for one in data:
-            url = one
+            url = one.replace('\\', '') # 360 got http:\/\/.....
             media_guid = hashlib.sha1(url).hexdigest()  # change to request.url after deprecation
             media_ext = os.path.splitext(url)[1]  # change to request.url after deprecation
             fp = os.path.join(IMAGES_STORE, 'full/%s%s' % (media_guid, media_ext))
